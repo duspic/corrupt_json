@@ -1,5 +1,5 @@
 # The main function is
-# def corrupt_json(no_of_corrupts:int, json_string: str) -> str
+# def corrupt_json(json_string:str, no_of_corrupts:int=3) -> str
 
 Other functions each deal with a certain common type of JSON corruption, 
 each making a single corruption at a time by semi-randomly selecting where to place the corruption.

@@ -167,7 +167,7 @@ def unescape_char(s: str) -> str:
 
 COMMON_JSON_CORRUPTS = [add_curly_bracket, remove_curly_bracket, add_quotation_mark, remove_quotation_mark, uppercase_literal, capitalize_literal, add_trailing_comma, unescape_char]
 
-def corrupt_json(no_of_corrupts:int, json_string: str) -> str:
+def corrupt_json(json_string: str, no_of_corrupts:int=3 ) -> str:
     # check if it's already corrupted, that could lead to unexpected problems
     # as this deals only with common corrupts, and not with other possibilities
     try:
