@@ -1,14 +1,16 @@
-# The main function is
-# def corrupt_json(json_string:str, no_of_corrupts:int=3) -> str
+# JSONCorruptor class #
+#### (in corruptor.py)
+I've figured this is the robust solution I was looking for.
+It is initialized with a json-compatible dict. During initialization, it creates a schema representation of the json structure, but separates the actual data (values).
 
-Other functions each deal with a certain common type of JSON corruption, 
-each making a single corruption at a time by semi-randomly selecting where to place the corruption.
-For example, adding a curly bracket won't happen in the middle of a key or value, but will happen next to an existing bracket, 
-as that is where those corruptions are most probable. The specific bracket which will be duplicated, however, is randomly selected.
+![json_dict](readme_imgs/json.png "JSON")
 
-A similar principle is applied to other functions.
+![schema](readme_imgs/schema.png "SCHEMA")
 
+in this example, "string_2" is mapped to "name", "string_3" to "iran" etc.
 
-Try the **corrupt_json** with a small no_of_corrupts and a simple json_string first.
+This approach keeps the data safe from harm, once the corruptions are done, the data is inserted in place of its pair.
 
-Disclaimer: I haven't tested this properly, but have tried to make it somewhat robust.
+_____
+# JSONCorruptor.corrupt() method #
+Makes a number of corruptions, inserts the data and formats to string representation. Returns the string representation with the corruptions and intact data.
