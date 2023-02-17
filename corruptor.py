@@ -139,7 +139,7 @@ class JSONCorruptor():
                 sch = sch.replace(f"'{k}', ","",1)
             # replace number
             elif "number" in k:
-                sch = sch.replace(k,str(v),1)
+                sch = sch.replace(f"'{k}'",str(v),1)
             # replace true, false, null and string
             else:
                 sch = sch.replace(k,v,1)
