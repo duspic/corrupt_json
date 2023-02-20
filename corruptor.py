@@ -40,7 +40,9 @@ class JSONCorruptor():
                 ],
             "object": [
                 self._add_curly_bracket_left,
+                self._add_curly_bracket_right,
                 self._remove_curly_bracket_left,
+                self._remove_curly_bracket_right
             ],
             "array": [
             ],
@@ -95,7 +97,18 @@ class JSONCorruptor():
         return schema.replace(f"'{name}", "{'"+name, 1)
     
     def _add_curly_bracket_right(self, schema:str, name:str) -> str:
-        pass
+        # this doesn't add a right curly bracket to the specific object
+        # but rather to one of existing curly brackets, depending
+        # on the number of object. Object_1 finds the first right curly
+        # object_2 finds the second etc.
+        pos = -1 
+        no = int(name[-1])
+        for i in range(no):
+            pos = schema.find('}', pos + 1)
+            if pos == -1:
+                return schema
+            
+        return schema[:pos]+'}'+schema[pos:]
     
     def _remove_curly_bracket_left(self, schema:str, name:str) -> str:
         # left curly is 2 idxs before "object_x" or 3 idxs after
@@ -108,6 +121,19 @@ class JSONCorruptor():
             return schema[:idx+11]+schema[idx+12:]
         
         return schema
+   
+    def _remove_curly_bracket_right(self, schema:str, name:str) -> str:
+        # this doesn't remove a right curly bracket from a specific object
+        # object_1 removes the first right curly
+        # object_2 removes the second etc.
+        pos = -1 
+        no = int(name[-1])
+        for i in range(no):
+            pos = schema.find('}', pos + 1)
+            if pos == -1:
+                return schema
+            
+        return schema[:pos]+schema[pos+1:]
     
     def _translate_type(self,element):
             """
