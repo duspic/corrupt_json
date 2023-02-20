@@ -1,3 +1,4 @@
+
 class JSONCorruptor():
     """
     For this to work properly, initialize with
@@ -37,6 +38,7 @@ class JSONCorruptor():
                 self._remove_quotations_right
                 ],
             "number": [
+                self._add_quotations_around
                 ],
             "object": [
                 self._add_curly_bracket_left,
@@ -141,6 +143,9 @@ class JSONCorruptor():
   
     def _capitalize_literal(self, schema:str, name:str) -> str:
         return schema.replace(f"'{name}'",name[:-2].capitalize(),1)
+    
+    def _add_quotations_around(self, schema:str, name:str) -> str:
+        return schema.replace(name, f"'{name}'",1)
     
     def _translate_type(self,element):
             """

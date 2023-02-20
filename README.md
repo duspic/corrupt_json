@@ -16,6 +16,7 @@ _____
 Makes a number of corruptions, inserts the data and formats to string representation. Returns the string representation with the corruptions and intact data.
 
 # WHAT NEXT?
+- add corrupt functions for numbers and arrays
 - test this out as much as possible
 - figure out a smarter way of corrupting;
     - avoid accidental repairs (removing and then adding same quotes/brackets)
