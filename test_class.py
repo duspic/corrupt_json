@@ -4,47 +4,52 @@ class Test(TestCase):
     def test(self):
         self.assertTrue(True)
 
-    def test_method_corrupt(self):
+    def test_add_quotes_left(self):
         from corruptor import JSONCorruptor
+        from random import randint
         import json
-        original_json = '{"{a}": 1, "b": 2}'
-        json_dict = json.loads(original_json)
-        
-        jc = JSONCorruptor(json_dict)
-        corrupt_json = jc.corrupt(1)
-
-        expected = {
-                """{""{a}": 1, "b": 2}""",
-                """{"{a}"": 1, "b": 2}""",
-                """{"{a}": 1, ""b": 2}""",
-                """{"{a}": 1, "b"": 2}""",
-            }
-        print(f"{original_json = }, {corrupt_json = }")
-        self.assertIn(corrupt_json, expected)
-        
-    def test_method_corrupt_50(self):
-        from corruptor import JSONCorruptor
-        import json
-        original_json = '{"{a}": "abra", "b": "kadabra", "[c]":"cobra"}'
+        original_json = '{"a":"abc", "b":"bca", "c":"cab"}'
         json_dict = json.loads(original_json)
         
         for _ in range(50):
+            rnd_str = f"string_{randint(1,6)}"
             jc = JSONCorruptor(json_dict)
-            corrupt_json = jc.corrupt(1)
-
+            jc._corrupt_schema = jc._add_quotations_left(jc._corrupt_schema,rnd_str)
+            corrupt_json = jc._schema_to_json_str(jc._corrupt_schema)
+            
             expected = {
-                    """{""{a}": "abra", "b": "kadabra", "[c]": "cobra"}""",
-                    """{"{a}"": "abra", "b": "kadabra", "[c]": "cobra"}""",
-                    """{"{a}": ""abra", "b": "kadabra", "[c]": "cobra"}""",
-                    """{"{a}": "abra"", "b": "kadabra", "[c]": "cobra"}""",
-                    """{"{a}": "abra", ""b": "kadabra", "[c]": "cobra"}""",
-                    """{"{a}": "abra", "b"": "kadabra", "[c]": "cobra"}""",
-                    """{"{a}": "abra", "b": ""kadabra", "[c]": "cobra"}""",
-                    """{"{a}": "abra", "b": "kadabra"", "[c]": "cobra"}""",
-                    """{"{a}": "abra", "b": "kadabra", ""[c]": "cobra"}""",
-                    """{"{a}": "abra", "b": "kadabra", "[c]"": "cobra"}""",
-                    """{"{a}": "abra", "b": "kadabra", "[c]": ""cobra"}""",
-                    """{"{a}": "abra", "b": "kadabra", "[c]": "cobra""}"""
-                }
+                """{""a": "abc", "b": "bca", "c": "cab"}""",
+                """{"a": ""abc", "b": "bca", "c": "cab"}""",
+                """{"a": "abc", ""b": "bca", "c": "cab"}""",
+                """{"a": "abc", "b": ""bca", "c": "cab"}""",
+                """{"a": "abc", "b": "bca", ""c": "cab"}""",
+                """{"a": "abc", "b": "bca", "c": ""cab"}"""
+            }
             print(f"{original_json = }, {corrupt_json = }")
             self.assertIn(corrupt_json, expected)
+            
+    def test_add_quotes_right(self):
+        from corruptor import JSONCorruptor
+        from random import randint
+        import json
+        original_json = '{"a":"abc", "b":"bca", "c":"cab"}'
+        json_dict = json.loads(original_json)
+        
+        for _ in range(50):
+            rnd_str = f"string_{randint(1,6)}"
+            jc = JSONCorruptor(json_dict)
+            jc._corrupt_schema = jc._add_quotations_right(jc._corrupt_schema,rnd_str)
+            corrupt_json = jc._schema_to_json_str(jc._corrupt_schema)
+            
+            expected = {
+                """{"a"": "abc", "b": "bca", "c": "cab"}""",
+                """{"a": "abc"", "b": "bca", "c": "cab"}""",
+                """{"a": "abc", "b"": "bca", "c": "cab"}""",
+                """{"a": "abc", "b": "bca"", "c": "cab"}""",
+                """{"a": "abc", "b": "bca", "c"": "cab"}""",
+                """{"a": "abc", "b": "bca", "c": "cab""}"""
+            }
+            print(f"{original_json = }, {corrupt_json = }")
+            self.assertIn(corrupt_json, expected)
+        
+        

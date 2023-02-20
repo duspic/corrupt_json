@@ -23,7 +23,7 @@ class JSONCorruptor():
         "number":0,
         "string":0,
         "array":0,
-        "object":-1
+        "object":0
         }
         self.name_element_map = {}
         self._schema = self._make_schema()
