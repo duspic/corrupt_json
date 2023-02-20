@@ -14,3 +14,11 @@ This approach keeps the data safe from harm, once the corruptions are done, the 
 _____
 # JSONCorruptor.corrupt() method #
 Makes a number of corruptions, inserts the data and formats to string representation. Returns the string representation with the corruptions and intact data.
+
+# WHAT NEXT?
+- test this out as much as possible
+- figure out a smarter way of corrupting;
+    - avoid accidental repairs (removing and then adding same quotes/brackets)
+    - avoid numerous same corrupts (adding 10 quotes/brackets to the same place)
+    - avoid reduntant corrupts (once a literal is capitalized, there's no need to try to capitalize it again)
+    - individual corrupt functions could produce a (result, success, report) tuple, so we're more familiar with what happened
