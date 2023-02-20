@@ -52,4 +52,45 @@ class Test(TestCase):
             print(f"{original_json = }, {corrupt_json = }")
             self.assertIn(corrupt_json, expected)
         
+    
+    def test_remove_quotes_left(self):
+        from corruptor import JSONCorruptor
+        from random import randint
+        import json
+        original_json = '{"a":{"b":"c"}}'
+        json_dict = json.loads(original_json)
         
+        for _ in range(50):
+            rnd_str = f"string_{randint(1,3)}"
+            jc = JSONCorruptor(json_dict)
+            jc._corrupt_schema = jc._remove_quotations_left(jc._corrupt_schema,rnd_str)
+            corrupt_json = jc._schema_to_json_str(jc._corrupt_schema)
+            
+            expected = {
+                """{a": {"b": "c"}}""",
+                """{"a": {b": "c"}}""",
+                """{"a": {"b": c"}}"""
+            }
+            print(f"{original_json = }, {corrupt_json = }")
+            self.assertIn(corrupt_json, expected)
+    
+    def test_remove_quotes_right(self):
+        from corruptor import JSONCorruptor
+        from random import randint
+        import json
+        original_json = '{"a":{"b":"c"}}'
+        json_dict = json.loads(original_json)
+        
+        for _ in range(50):
+            rnd_str = f"string_{randint(1,3)}"
+            jc = JSONCorruptor(json_dict)
+            jc._corrupt_schema = jc._remove_quotations_right(jc._corrupt_schema,rnd_str)
+            corrupt_json = jc._schema_to_json_str(jc._corrupt_schema)
+            
+            expected = {
+                """{"a: {"b": "c"}}""",
+                """{"a": {"b: "c"}}""",
+                """{"a": {"b": "c}}"""
+            }
+            print(f"{original_json = }, {corrupt_json = }")
+            self.assertIn(corrupt_json, expected)

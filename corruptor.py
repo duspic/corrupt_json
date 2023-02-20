@@ -28,25 +28,43 @@ class JSONCorruptor():
         self.name_element_map = {}
         self._schema = self._make_schema()
         self._corrupt_schema = self.get_schema()
+        
+        self.element_corruption_map = {
+            "string":[
+                self._add_quotations_left,
+                self._add_quotations_right,
+                self._remove_quotations_left,
+                self._remove_quotations_right
+                ],
+            "number": [
+                ],
+            "object": [
+                self._add_curly_bracket_left,
+                self._remove_curly_bracket_left,
+            ],
+            "array": [
+            ],
+            "literal": [
+            ]
+        }
     
     def corrupt(self, count:int=3) ->str:
         """ 
-        currently only deals with adding quotes (") on either 
-        side of a string value. some logic will  have to
-        be implemented for dealing with objects and arrays
+        one-stop-shop for corrupts
         """
         from random import choice
-        corrupts = [
-            self._add_quotations_left,
-            self._add_quotations_right,
-            ]
+        # choose only from elements tha are present in this json
+        elements = [k for k,v in self._counter.items() if v>0]
         
         for i in range(count):
+            # choose an element
+            el = choice(elements)
             # choose a corrupt func
+            corrupts = self.element_corruption_map[el]
             fn = choice(corrupts)
-            # choose a string
-            no = choice(range(1,self._counter['string']+1))
-            name = f"string_{no}"
+            # choose a specific element
+            no = choice(range(1,self._counter[el]+1))
+            name = f"{el}_{no}"
             self._corrupt_schema = fn(self._corrupt_schema,name)
             print(f"corrupted {name} with {fn.__name__}") 
     
@@ -66,6 +84,30 @@ class JSONCorruptor():
         
     def _add_quotations_right(self, schema:str, name:str) -> str:
         return schema.replace(name, f'{name}"', 1)
+ 
+    def _remove_quotations_left(self, schema:str, name:str) -> str:
+        return schema.replace(f"'{name}",name, 1)
+    
+    def _remove_quotations_right(self, schema:str, name:str) -> str:
+        return schema.replace(f"{name}'",name, 1)
+    
+    def _add_curly_bracket_left(self, schema:str, name:str) -> str:
+        return schema.replace(f"'{name}", "{'"+name, 1)
+    
+    def _add_curly_bracket_right(self, schema:str, name:str) -> str:
+        pass
+    
+    def _remove_curly_bracket_left(self, schema:str, name:str) -> str:
+        # left curly is 2 idxs before "object_x" or 3 idxs after
+        idx = schema.find(name)
+        if schema[idx-2] == '{':
+            return schema[:idx-2]+schema[idx-1:]
+        
+        # len(object_x)+3 = 11
+        if schema[idx+11] == '{':
+            return schema[:idx+11]+schema[idx+12:]
+        
+        return schema
     
     def _translate_type(self,element):
             """
