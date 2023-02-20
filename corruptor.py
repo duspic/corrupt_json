@@ -47,6 +47,7 @@ class JSONCorruptor():
             "array": [
             ],
             "literal": [
+                self._capitalize_literal,
             ]
         }
     
@@ -62,7 +63,10 @@ class JSONCorruptor():
             # choose an element
             el = choice(elements)
             # choose a corrupt func
-            corrupts = self.element_corruption_map[el]
+            if el in ["null", "false", "true"]:
+                corrupts = self.element_corruption_map['literal']
+            else:
+                corrupts = self.element_corruption_map[el]
             fn = choice(corrupts)
             # choose a specific element
             no = choice(range(1,self._counter[el]+1))
@@ -134,6 +138,9 @@ class JSONCorruptor():
                 return schema
             
         return schema[:pos]+schema[pos+1:]
+  
+    def _capitalize_literal(self, schema:str, name:str) -> str:
+        return schema.replace(f"'{name}'",name[:-2].capitalize(),1)
     
     def _translate_type(self,element):
             """
@@ -208,9 +215,12 @@ class JSONCorruptor():
             # replace number
             elif "number" in k:
                 sch = sch.replace(f"'{k}'",str(v),1)
-            # replace true, false, null and string
-            else:
+            elif "string" in k:
                 sch = sch.replace(k,v,1)
+            # replace true, false, null
+            else:
+                sch = sch.replace(f"'{k}'",k[:-2],1)
+                
         sch = sch.replace("(","")
         sch = sch.replace(")","")
         sch = sch.replace("'", '"')

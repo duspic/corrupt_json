@@ -175,3 +175,40 @@ class Test(TestCase):
             }
             print(f"{original_json = }, {corrupt_json = }")
             self.assertIn(corrupt_json, expected)
+    
+    def test_capitalize_literal(self):
+        from corruptor import JSONCorruptor
+        from random import choice
+        import json
+        original_json = '{"a": null, "b": false, "c": true}'
+        json_dict = json.loads(original_json)
+        name = choice(["null_1", "false_1", "true_1"])
+        jc  = JSONCorruptor(json_dict)
+        jc._corrupt_schema = jc._capitalize_literal(jc._corrupt_schema, name)
+        corrupt_json = jc._schema_to_json_str(jc._corrupt_schema)
+        
+        expected = {
+            '{"a": Null, "b": false, "c": true}',
+            '{"a": null, "b": False, "c": true}',
+            '{"a": null, "b": false, "c": True}'
+        }
+        print(f"{original_json = }, {corrupt_json = }")
+        self.assertIn(corrupt_json, expected)
+
+    def test_capitalize_literal_2(self):
+        from corruptor import JSONCorruptor
+        from random import choice
+        import json
+        original_json = '{"a": null, "b": "false", "c": true}'
+        json_dict = json.loads(original_json)
+        name = choice(["null_1", "false_1", "true_1"])
+        jc  = JSONCorruptor(json_dict)
+        jc._corrupt_schema = jc._capitalize_literal(jc._corrupt_schema, name)
+        corrupt_json = jc._schema_to_json_str(jc._corrupt_schema)
+        
+        expected = {
+            '{"a": Null, "b": "false", "c": true}',
+            '{"a": null, "b": "false", "c": True}'
+        }
+        print(f"{original_json = }, {corrupt_json = }")
+        self.assertIn(corrupt_json, expected)
